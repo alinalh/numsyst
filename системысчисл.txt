@@ -1,0 +1,77 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <cmath>
+
+using namespace std;
+
+// Функция для перевода из одной системы счисления в десятичную
+int otherToDecimal(const string& number, int base) {
+    if (base < 2 || base > 36) {
+        return -1; // Ошибка: некорректная основа
+    }
+
+    int decimal = 0;
+    int power = 1;
+    for (int i = number.length() - 1; i >= 0; --i) {
+        int digit;
+        if (isdigit(number[i])) {
+            digit = number[i] - '0';
+        } else {
+            digit = toupper(number[i]) - 'A' + 10;
+        }
+
+        if (digit >= base) {
+            return -1; // Ошибка: некорректная цифра
+        }
+        decimal += digit * power;
+        power *= base;
+    }
+    return decimal;
+}
+
+// Функция для перевода из десятичной в другую систему счисления
+string decimalToOther(int decimal, int base) {
+    if (base < 2 || base > 36) {
+        return "Ошибка: некорректная основа";
+    }
+    if (decimal == 0) {
+        return "0";
+    }
+
+    string result = "";
+    while (decimal > 0) {
+        int remainder = decimal % base;
+        if (remainder < 10) {
+            result = char(remainder + '0') + result;
+        } else {
+            result = char(remainder - 10 + 'A') + result;
+        }
+        decimal /= base;
+    }
+    return result;
+}
+
+int main() {
+    string number;
+    int initialBase, targetBase;
+
+    cout << "Введите число: ";
+    cin >> number;
+    cout << "Введите исходную систему счисления (2-36): ";
+    cin >> initialBase;
+    cout << "Введите целевую систему счисления (2-36): ";
+    cin >> targetBase;
+
+    int decimal = otherToDecimal(number, initialBase);
+
+    if (decimal == -1) {
+        cout << "Ошибка: Некорректное число в исходной системе счисления." << endl;
+    } else {
+        string result = decimalToOther(decimal, targetBase);
+        cout << "Результат: " << result << endl;
+    }
+
+
+    return 0;
+}
